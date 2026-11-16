@@ -1,0 +1,27 @@
+---
+// How a job runs, as a numbered list of short steps.
+interface Props {
+  title: string;
+  lead?: string;
+  items: { title: string; text: string }[];
+  /** The id of the heading, for the section's aria-labelledby. */
+  id?: string;
+}
+
+const { title, lead, items, id = "steps" } = Astro.props;
+---
+
+<section class="steps" aria-labelledby={id}>
+  <h2 id={id}>{title}</h2>
+  {lead && <p class="lead">{lead}</p>}
+  <ol class="step-list">
+    {
+      items.map((item) => (
+        <li>
+          <h3>{item.title}</h3>
+          <p>{item.text}</p>
+        </li>
+      ))
+    }
+  </ol>
+</section>

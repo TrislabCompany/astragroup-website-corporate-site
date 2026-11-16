@@ -1,0 +1,18 @@
+---
+// A link card to one of Astra Group's extension sites (fasadanakljuc.si,
+// strehanakljuc.si), on the facade and roofing pages. A plain link.
+import { t, type Lang } from "../i18n";
+
+interface Props {
+  site: { url: string; name: string; text: string };
+  lang: Lang;
+}
+
+const { site, lang } = Astro.props;
+---
+
+<aside class="extension-link" aria-labelledby="extension-link">
+  <h2 id="extension-link">{t(lang, "service.extension")}</h2>
+  <p>{site.text}</p>
+  <a class="button" href={site.url} hreflang="sl">{site.name} →</a>
+</aside>

@@ -1,22 +1,29 @@
 ---
-import ContactCta from "../../../components/ContactCta.astro";
-import ItemCard from "../../../components/ItemCard.astro";
+// The list pages: /<lang>/services and /<lang>/projects.
+import ContactBand from "../../../components/ContactBand.astro";
+import ProjectCard from "../../../components/ProjectCard.astro";
+import ServiceCard from "../../../components/ServiceCard.astro";
 import { type Lang } from "../../../i18n";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
-import { collectionPaths, collectionSettings, sortedItems, type ItemCollection } from "../../../lib/items";
+import { projects, services } from "../../../lib/catalog";
+import { collectionPaths, collectionSettings, type ItemCollection } from "../../../lib/items";
 
 export const getStaticPaths = collectionPaths;
 
 const { lang, collection } = Astro.props as { lang: Lang; collection: ItemCollection };
 const settings = collectionSettings(collection);
-const items = await sortedItems(collection, lang);
+const serviceList = collection === "services" ? await services(lang) : [];
+const projectList = collection === "projects" ? await projects(lang) : [];
 ---
 
 <BaseLayout title={settings.title[lang]} description={settings.lead[lang]} lang={lang}>
-  <h1>{settings.title[lang]}</h1>
-  <p class="lead">{settings.lead[lang]}</p>
-  <ul class="grid">
-    {items.map((entry) => <ItemCard entry={entry} collection={collection} lang={lang} level={2} />)}
+  <div class="page-head">
+    <h1>{settings.title[lang]}</h1>
+    <p class="lead">{settings.lead[lang]}</p>
+  </div>
+  <ul class="card-grid">
+    {serviceList.map((service) => <ServiceCard service={service} lang={lang} level={2} />)}
+    {projectList.map((project) => <ProjectCard project={project} lang={lang} level={2} />)}
   </ul>
-  <ContactCta lang={lang} />
+  <ContactBand lang={lang} />
 </BaseLayout>

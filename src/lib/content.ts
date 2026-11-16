@@ -1,7 +1,7 @@
 // Helpers for content kept per language (src/content/<collection>/<language>/).
 
 import { getCollection, type CollectionKey } from "astro:content";
-import { isLang, type Lang } from "../i18n";
+import { isLang, languages, type Lang } from "../i18n";
 
 /** The language of an entry, from the first folder of its id ("sl/welcome"). */
 export function entryLang(entry: { id: string }): Lang {
@@ -24,8 +24,9 @@ export async function getEntries<C extends CollectionKey>(collection: C, lang: L
   return entries.filter((entry) => entryLang(entry) === lang);
 }
 
-/** The languages an item exists in, for hreflang and the language switch. */
+/** The languages an item exists in, for hreflang and the language switch, in the site's order of languages. */
 export async function entryLanguages(collection: CollectionKey, slug: string): Promise<Lang[]> {
   const entries = await getCollection(collection);
-  return entries.filter((entry) => entrySlug(entry) === slug).map(entryLang);
+  const found = new Set(entries.filter((entry) => entrySlug(entry) === slug).map(entryLang));
+  return languages.filter((lang) => found.has(lang));
 }

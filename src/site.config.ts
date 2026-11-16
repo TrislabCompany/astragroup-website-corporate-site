@@ -93,7 +93,8 @@ const site: SiteSettings<Lang> = {
     imprint: true,
     privacy: true,
     accessibility: true,
-    sustainability: false
+    sustainability: false,
+    terms: true
   },
   structuredData: "LocalBusiness",
   securityTxt: {

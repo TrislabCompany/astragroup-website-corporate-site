@@ -10,7 +10,7 @@ import site from "../site.config";
 import "../styles/tokens.css";
 import "../styles/global.css";
 // The Latin subset of the font in src/styles/tokens.css, loaded early so text is drawn once, in it.
-import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import robotoLatin from "@fontsource-variable/roboto/files/roboto-latin-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -35,7 +35,7 @@ const path = unlocalizedPath(Astro.url.pathname);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={robotoLatin} as="font" type="font/woff2" crossorigin />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <SeoHead title={title} description={description} lang={lang} available={available} noindex={noindex} image={image} />
     <meta name="theme-color" content={site.themeColor} />

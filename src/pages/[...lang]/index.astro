@@ -1,46 +1,82 @@
 ---
-import ContactCta from "../../components/ContactCta.astro";
-import ItemCard from "../../components/ItemCard.astro";
+// The home page, top to bottom as in docs/brief.md: the hero, the six service
+// groups, how a job runs, the projects, the region and the contact band.
+import { Image } from "astro:assets";
+import { getEntry } from "astro:content";
+import heroPhoto from "../../assets/projects/facade/1.jpg";
+import ContactBand from "../../components/ContactBand.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import StepList from "../../components/StepList.astro";
 import { languagePaths, localizedPath, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { sortedItems, type ItemCollection } from "../../lib/items";
+import { projects, services } from "../../lib/catalog";
+import { head } from "../../lib/images";
 import site from "../../site.config";
 
 export const getStaticPaths = languagePaths;
 
 const { lang } = Astro.props as { lang: Lang };
-// A section for every list of items marked home in src/site.config.ts.
-const sections = await Promise.all(
-  site.collections
-    .filter((collection) => collection.home)
-    .map(async (collection) => ({ ...collection, items: await sortedItems(collection.id as ItemCollection, lang) })),
-);
+const page = await getEntry("pages", `${lang}/home`);
+if (!page) throw new Error(`src/content/pages/${lang}/home.md is missing.`);
+const { slogan, intro, heroAlt, steps, region } = page.data;
+const list = (id: string) => site.collections.find((collection) => collection.id === id)!;
+const serviceList = await services(lang);
+const projectList = await projects(lang);
 ---
 
-<BaseLayout title={site.name} lang={lang}>
-  <section class="hero">
-    <h1>{site.name}</h1>
-    <p class="lead">{site.description[lang]}</p>
-    <div class="actions">
-      <a class="button" href={localizedPath(lang, "/contact")}>{t(lang, "cta.contact")}</a>
+<BaseLayout title={`${site.name}: ${page.data.title}`} description={page.data.description} lang={lang}>
+  <section class="hero bleed" aria-labelledby="hero-title">
+    <Image src={heroPhoto} alt={heroAlt ?? ""} {...head} loading="eager" fetchpriority="high" class="hero-photo" />
+    <div class="wrap hero-text">
+      <p class="hero-name">{site.name}</p>
+      <h1 id="hero-title">{slogan}</h1>
+      {intro && <p class="hero-lead">{intro}</p>}
+      <div class="actions">
+        <a class="button" href={localizedPath(lang, "/services")}>{t(lang, "cta.services")}</a>
+        <a class="button ghost" href={localizedPath(lang, "/contact")}>{t(lang, "cta.contact")}</a>
+      </div>
     </div>
   </section>
 
+  <section class="section" aria-labelledby="services">
+    <h2 id="services">{list("services").title[lang]}</h2>
+    <p class="lead">{list("services").lead[lang]}</p>
+    <ul class="card-grid">
+      {serviceList.map((service) => <ServiceCard service={service} lang={lang} />)}
+    </ul>
+  </section>
+
+  {steps && <StepList title={steps.title} lead={steps.lead} items={steps.items} />}
+
+  <section class="section" aria-labelledby="projects">
+    <h2 id="projects">{list("projects").title[lang]}</h2>
+    <p class="lead">{list("projects").lead[lang]}</p>
+    <ul class="card-grid">
+      {projectList.map((project) => <ProjectCard project={project} lang={lang} />)}
+    </ul>
+    <p><a class="more" href={localizedPath(lang, "/projects")}>{t(lang, "cta.allProjects")} →</a></p>
+  </section>
+
   {
-    sections.map((section) => (
-      <section class="section" aria-labelledby={section.id}>
-        <h2 id={section.id}>
-          <a href={localizedPath(lang, `/${section.id}`)}>{section.title[lang]}</a>
-        </h2>
-        <p class="lead">{section.lead[lang]}</p>
-        <ul class="grid">
-          {section.items.map((entry) => (
-            <ItemCard entry={entry} collection={section.id as ItemCollection} lang={lang} />
-          ))}
-        </ul>
+    region && (
+      <section class="region bleed" aria-labelledby="region">
+        <div class="wrap region-row">
+          <div>
+            <h2 id="region">{region.title}</h2>
+            <p>{region.text}</p>
+          </div>
+          {region.places.length > 0 && (
+            <ul class="places">
+              {region.places.map((place) => (
+                <li>{place}</li>
+              ))}
+            </ul>
+          )}
+        </div>
       </section>
-    ))
+    )
   }
 
-  <ContactCta lang={lang} />
+  <ContactBand lang={lang} />
 </BaseLayout>

@@ -1,5 +1,8 @@
 ---
+// The navy site footer: logo, company details, the services and the legal pages.
 import { localizedPath, t, type Lang } from "../i18n";
+import { services } from "../lib/catalog";
+import { entrySlug } from "../lib/content";
 import site from "../site.config";
 import EnvironmentBadge from "./EnvironmentBadge.astro";
 import Logo from "./Logo.astro";
@@ -9,38 +12,82 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const { company, contact } = site;
 const legal = [
   { on: site.legalPages.imprint, href: "/imprint", label: t(lang, "legal.imprint") },
   { on: site.legalPages.privacy, href: "/privacy", label: t(lang, "legal.privacy") },
+  { on: site.legalPages.terms ?? false, href: "/terms", label: t(lang, "legal.terms") },
   { on: site.legalPages.accessibility, href: "/accessibility", label: t(lang, "legal.accessibility") },
   { on: site.legalPages.sustainability, href: "/sustainability", label: t(lang, "legal.sustainability") },
   { on: true, href: "/sitemap", label: t(lang, "legal.sitemap") },
 ].filter((link) => link.on);
+const serviceLinks = (await services(lang)).map((service) => ({ href: `/services/${entrySlug(service)}`, label: service.data.title }));
 const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="wrap footer-row">
+  <div class="wrap footer-grid">
     <div class="footer-about">
       <a class="brand" href={localizedPath(lang)}>
-        <Logo size={28} />
-        <span>{site.name}</span>
+        <Logo height={72} />
       </a>
       <p>{site.description[lang]}</p>
-      <p>{t(lang, "footer.noCookies")}</p>
     </div>
-    {
-      legal.length > 0 && (
-        <nav class="legal-links" aria-label={t(lang, "legal.nav")}>
-          {legal.map(({ href, label }) => (
-            <a href={localizedPath(lang, href)}>{label}</a>
-          ))}
-        </nav>
-      )
-    }
+
+    <div>
+      <h2>{t(lang, "contact.company")}</h2>
+      <address>
+        {company.legalName}<br />
+        {company.address.street}<br />
+        {`${company.address.postalCode} ${company.address.city}`}
+      </address>
+      <ul class="footer-contact">
+        {
+          contact.phone && (
+            <li>
+              <a href={`tel:${contact.phone.replace(/\s/g, "")}`}>{contact.phone}</a>
+            </li>
+          )
+        }
+        {
+          contact.topics.map(({ email }) => (
+            <li>
+              <a href={`mailto:${email}`}>{email}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+
+    <nav aria-label={t(lang, "nav.services")}>
+      <h2>{t(lang, "nav.services")}</h2>
+      <ul>
+        {
+          serviceLinks.map(({ href, label }) => (
+            <li>
+              <a href={localizedPath(lang, href)}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <nav aria-label={t(lang, "legal.nav")}>
+      <h2>{t(lang, "legal.nav")}</h2>
+      <ul>
+        {
+          legal.map(({ href, label }) => (
+            <li>
+              <a href={localizedPath(lang, href)}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
-  <div class="wrap footer-row footer-bottom">
-    <span>© {year} {site.company.legalName}. {t(lang, "footer.rights")}</span>
+  <div class="wrap footer-bottom">
+    <span>{`© ${year} ${company.legalName}${company.legalName.endsWith(".") ? "" : "."} ${t(lang, "footer.rights")}`}</span>
+    <span>{t(lang, "footer.noCookies")}</span>
     <EnvironmentBadge />
   </div>
 </footer>

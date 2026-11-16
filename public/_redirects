@@ -1,0 +1,12 @@
+# The addresses of the earlier astragroup.si (an Angular app with one URL per
+# page for every language), moved permanently to the same pages in Slovenian,
+# the default language. Cloudflare Pages answers these before it serves any
+# file; astro.config.mjs puts the "/ /sl 301" line above them at build.
+# www.astragroup.si and http:// are redirected at the Cloudflare edge
+# (tl-cloud-infrastructure), not here.
+/about /sl/about 301
+/services /sl/services 301
+/projects /sl/projects 301
+/contact /sl/contact 301
+/privacy /sl/privacy 301
+/terms /sl/terms 301

@@ -89,6 +89,8 @@ export interface SiteSettings<L extends string> {
     accessibility: boolean;
     /** The website's carbon footprint and the company's environmental measures (ESG). */
     sustainability: boolean;
+    /** The general terms of the website and of the offers made through it. */
+    terms?: boolean;
   };
 
   /** The JSON-LD on every page: Organization, or LocalBusiness when customers visit the address. */
