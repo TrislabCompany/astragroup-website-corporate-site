@@ -29,12 +29,14 @@ const projectList = await projects(lang);
   <section class="hero bleed" aria-labelledby="hero-title">
     <Image src={heroPhoto} alt={heroAlt ?? ""} {...head} loading="eager" fetchpriority="high" class="hero-photo" />
     <div class="wrap hero-text">
-      <p class="hero-name">{site.name}</p>
-      <h1 id="hero-title">{slogan}</h1>
-      {intro && <p class="hero-lead">{intro}</p>}
-      <div class="actions">
-        <a class="button" href={localizedPath(lang, "/services")}>{t(lang, "cta.services")}</a>
-        <a class="button ghost" href={localizedPath(lang, "/contact")}>{t(lang, "cta.contact")}</a>
+      <div class="hero-panel">
+        <p class="hero-name">{site.name}</p>
+        <h1 id="hero-title">{slogan}</h1>
+        {intro && <p class="hero-lead">{intro}</p>}
+        <div class="actions">
+          <a class="button" href={localizedPath(lang, "/services")}>{t(lang, "cta.services")}</a>
+          <a class="button ghost" href={localizedPath(lang, "/contact")}>{t(lang, "cta.contact")}</a>
+        </div>
       </div>
     </div>
   </section>

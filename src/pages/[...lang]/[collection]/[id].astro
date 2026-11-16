@@ -43,9 +43,11 @@ const steps = service ? (await getEntry("pages", `${lang}/home`))?.data.steps : 
   <section class="photo-head bleed" aria-labelledby="item-title">
     {head && <Image src={head.src} alt={head.alt} {...headPhoto} loading="eager" fetchpriority="high" class="hero-photo" />}
     <div class="wrap hero-text">
-      <p class="eyebrow"><a href={localizedPath(lang, `/${collection}`)}>{settings.title[lang]}</a></p>
-      <h1 id="item-title">{entry.data.title}</h1>
-      <p class="hero-lead">{entry.data.summary}</p>
+      <div class="hero-panel">
+        <p class="eyebrow"><a href={localizedPath(lang, `/${collection}`)}>{settings.title[lang]}</a></p>
+        <h1 id="item-title">{entry.data.title}</h1>
+        <p class="hero-lead">{entry.data.summary}</p>
+      </div>
     </div>
   </section>
 

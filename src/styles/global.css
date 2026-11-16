@@ -472,8 +472,10 @@ main > :last-child:not(.bleed) {
   font-weight: 700;
 }
 
-/* Hero and photo heads: text on a dark navy gradient over the photo; the
-   section itself is navy, so the text stays readable before the photo loads. */
+/* Hero and photo heads: the text on a solid navy panel over the photo, so its
+   contrast never depends on the photo (and axe can measure it: text over a
+   gradient or a pseudo-element overlay is left "incomplete", which pa11y
+   fails). The section itself is navy too, for before the photo loads. */
 
 .hero,
 .photo-head {
@@ -498,19 +500,23 @@ main > :last-child:not(.bleed) {
   object-fit: cover;
 }
 
-.hero::after,
-.photo-head::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to top, var(--dark) 0%, color-mix(in srgb, var(--dark) 85%, transparent) 35%, color-mix(in srgb, var(--dark) 25%, transparent) 100%);
-}
-
 .hero-text {
   position: relative;
   z-index: 1;
   padding-top: 4rem;
   padding-bottom: 3rem;
+}
+
+.hero-panel {
+  max-width: 44rem;
+  padding: 1.5rem 1.75rem;
+  border-left: 0.25rem solid var(--accent);
+  border-radius: var(--radius);
+  background: var(--dark);
+}
+
+.hero-panel > :last-child {
+  margin-bottom: 0;
 }
 
 .hero h1,
@@ -620,12 +626,8 @@ main > :last-child:not(.bleed) {
 }
 
 .project-card-text {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  padding: 3rem 1.25rem 1.25rem;
-  background: linear-gradient(to top, var(--dark) 0%, color-mix(in srgb, var(--dark) 90%, transparent) 55%, transparent 100%);
+  padding: 1rem 1.25rem 1.25rem;
+  background: var(--dark);
 }
 
 .project-card-text :is(h2, h3) {
