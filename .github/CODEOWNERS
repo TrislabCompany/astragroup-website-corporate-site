@@ -1,1 +1,4 @@
-* @TrislabCompany/devops
+* @TrislabCompany/astragroup-corporate-site
+/.github/ @TrislabCompany/astragroup-corporate-site @TrislabCompany/devops
+/platform.yaml @TrislabCompany/astragroup-corporate-site @TrislabCompany/devops
+/.trivyignore @TrislabCompany/astragroup-corporate-site @TrislabCompany/devops
