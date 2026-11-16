@@ -1,0 +1,58 @@
+---
+// The contact band: an amber surface with navy text, the phone and e-mail
+// links, and a link to the address on a map. Nothing is embedded.
+import { localizedPath, t, type Lang } from "../i18n";
+import site from "../site.config";
+
+interface Props {
+  lang: Lang;
+  /** Also link to the contact page (not on the contact page itself). */
+  contactLink?: boolean;
+}
+
+const { lang, contactLink = true } = Astro.props;
+const { contact } = site;
+---
+
+<section class="contact-band bleed" aria-labelledby="contact-band">
+  <div class="wrap contact-band-row">
+    <div>
+      <h2 id="contact-band">{t(lang, "band.title")}</h2>
+      <p>{t(lang, "band.text")}</p>
+    </div>
+    <ul class="contact-band-links">
+      {
+        contact.phone && (
+          <li>
+            <a class="button dark" href={`tel:${contact.phone.replace(/\s/g, "")}`}>
+              {contact.phone}
+            </a>
+          </li>
+        )
+      }
+      {
+        contact.topics.map(({ email }) => (
+          <li>
+            <a href={`mailto:${email}`}>{email}</a>
+          </li>
+        ))
+      }
+      {
+        contact.mapUrl && (
+          <li>
+            <a href={contact.mapUrl} rel="noopener noreferrer">
+              {t(lang, "contact.map")}
+            </a>
+          </li>
+        )
+      }
+      {
+        contactLink && (
+          <li>
+            <a href={localizedPath(lang, "/contact")}>{t(lang, "nav.contact")}</a>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,36 @@
+---
+// A service group as a card: its photo, title, one line and a link to its page.
+import { Image } from "astro:assets";
+import { localizedPath, type Lang } from "../i18n";
+import type { Service } from "../lib/catalog";
+import { entrySlug } from "../lib/content";
+import { card } from "../lib/images";
+
+interface Props {
+  service: Service;
+  lang: Lang;
+  // The card's heading level: one below the heading of the list it is in.
+  level?: 2 | 3;
+}
+
+const { service, lang, level = 3 } = Astro.props;
+const Heading = `h${level}` as const;
+const href = localizedPath(lang, `/services/${entrySlug(service)}`);
+const { photo } = service.data;
+---
+
+<li class="service-card">
+  <article>
+    {
+      photo ? (
+        <Image src={photo.src} alt="" {...card} class="card-photo" />
+      ) : (
+        <div class="card-photo card-photo-empty" />
+      )
+    }
+    <div class="card-body">
+      <Heading><a href={href}>{service.data.title}</a></Heading>
+      <p>{service.data.summary}</p>
+    </div>
+  </article>
+</li>

@@ -1,19 +1,41 @@
 ---
-import ContactCta from "../../components/ContactCta.astro";
+// About the company: who it is and how it works (src/content/pages/<lang>/about.md),
+// then the vision, mission, values and goals as a short list.
+import { getEntry, render } from "astro:content";
+import ContactBand from "../../components/ContactBand.astro";
 import { languagePaths, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import site from "../../site.config";
 
 export const getStaticPaths = languagePaths;
 
 const { lang } = Astro.props as { lang: Lang };
+const page = await getEntry("pages", `${lang}/about`);
+if (!page) throw new Error(`src/content/pages/${lang}/about.md is missing.`);
+const { Content } = await render(page);
 ---
 
-<BaseLayout title={t(lang, "nav.about")} lang={lang}>
-  <div class="prose">
-    <h1>{t(lang, "nav.about")}</h1>
-    <p class="lead">{site.description[lang]}</p>
-    {/* Sample page: replace the text above with the site's own, in every language, or move it to Markdown in src/content/. */}
+<BaseLayout title={page.data.title} description={page.data.description} lang={lang}>
+  <div class="page-head">
+    <h1>{page.data.title}</h1>
+    {page.data.intro && <p class="lead">{page.data.intro}</p>}
   </div>
-  <ContactCta lang={lang} />
+  <div class="prose">
+    <Content />
+  </div>
+  {
+    page.data.principles.length > 0 && (
+      <section class="section" aria-labelledby="principles">
+        <h2 id="principles">{t(lang, "about.principles")}</h2>
+        <dl class="principles">
+          {page.data.principles.map((item) => (
+            <div>
+              <dt>{item.title}</dt>
+              <dd>{item.text}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+    )
+  }
+  <ContactBand lang={lang} />
 </BaseLayout>

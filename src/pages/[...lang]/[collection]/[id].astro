@@ -1,10 +1,24 @@
 ---
-import { render, type CollectionEntry } from "astro:content";
-import ContactCta from "../../../components/ContactCta.astro";
+// The page of one service or one project.
+//
+// A service: a photo head, what the group includes, the text, how a job runs,
+// its projects, and on the facade and roofing pages the extension site.
+// A project: its cover as the head, the type of work (and the place and year
+// once confirmed), its services, the text and its gallery: only its own photos.
+import { Image } from "astro:assets";
+import { getEntry, render, type CollectionEntry } from "astro:content";
+import ContactBand from "../../../components/ContactBand.astro";
+import ExtensionSiteLink from "../../../components/ExtensionSiteLink.astro";
+import ProjectCard from "../../../components/ProjectCard.astro";
+import ProjectGallery from "../../../components/ProjectGallery.astro";
+import StepList from "../../../components/StepList.astro";
 import { seoProps } from "../../../components/seo/fields";
-import { localizedPath, type Lang } from "../../../i18n";
+import { localizedPath, t, type Lang } from "../../../i18n";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { projectsOf, servicesOf, type Project, type Service } from "../../../lib/catalog";
+import { entrySlug } from "../../../lib/content";
 import { collectionSettings, itemPaths, type ItemCollection } from "../../../lib/items";
+import { head as headPhoto } from "../../../lib/images";
 
 export const getStaticPaths = itemPaths;
 
@@ -16,23 +30,99 @@ const { entry, lang, collection, available } = Astro.props as {
 };
 const settings = collectionSettings(collection);
 const { Content } = await render(entry);
+
+const service = collection === "services" ? (entry as Service) : undefined;
+const project = collection === "projects" ? (entry as Project) : undefined;
+const head = service?.data.photo ?? project?.data.cover;
+const related = service ? await projectsOf(service, lang) : [];
+const projectServices = project ? await servicesOf(project, lang) : [];
+const steps = service ? (await getEntry("pages", `${lang}/home`))?.data.steps : undefined;
 ---
 
 <BaseLayout {...seoProps(entry.data)} description={entry.data.summary} lang={lang} available={available}>
-  <article class="prose">
-    <p class="eyebrow"><a href={localizedPath(lang, `/${collection}`)}>{settings.title[lang]}</a></p>
-    <h1>{entry.data.title}</h1>
-    <p class="lead">{entry.data.summary}</p>
-    <Content />
-    {
-      entry.data.tags.length > 0 && (
-        <ul class="tags">
-          {entry.data.tags.map((tag) => (
-            <li>{tag}</li>
+  <section class="photo-head bleed" aria-labelledby="item-title">
+    {head && <Image src={head.src} alt={head.alt} {...headPhoto} loading="eager" fetchpriority="high" class="hero-photo" />}
+    <div class="wrap hero-text">
+      <div class="hero-panel">
+        <p class="eyebrow"><a href={localizedPath(lang, `/${collection}`)}>{settings.title[lang]}</a></p>
+        <h1 id="item-title">{entry.data.title}</h1>
+        <p class="hero-lead">{entry.data.summary}</p>
+      </div>
+    </div>
+  </section>
+
+  {
+    service && (
+      <div class="service-intro">
+        <section aria-labelledby="includes">
+          <h2 id="includes">{t(lang, "service.includes")}</h2>
+          <ul class="checklist">
+            {service.data.features.map((feature) => (
+              <li>{feature}</li>
+            ))}
+          </ul>
+        </section>
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+    )
+  }
+
+  {
+    project && (
+      <div class="service-intro">
+        <dl class="facts">
+          <dt>{t(lang, "project.type")}</dt>
+          <dd>{project.data.type}</dd>
+          {project.data.place && (
+            <>
+              <dt>{t(lang, "project.place")}</dt>
+              <dd>{project.data.place}</dd>
+            </>
+          )}
+          {project.data.year && (
+            <>
+              <dt>{t(lang, "project.year")}</dt>
+              <dd>{project.data.year}</dd>
+            </>
+          )}
+          <dt>{t(lang, "project.services")}</dt>
+          <dd>
+            <ul class="inline-list">
+              {projectServices.map((item) => (
+                <li>
+                  <a href={localizedPath(lang, `/services/${entrySlug(item)}`)}>{item.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </dd>
+        </dl>
+        <div class="prose">
+          <Content />
+        </div>
+      </div>
+    )
+  }
+
+  {project && <ProjectGallery photos={project.data.gallery} lang={lang} />}
+
+  {service?.data.extensionSite && <ExtensionSiteLink site={service.data.extensionSite} lang={lang} />}
+
+  {steps && <StepList title={steps.title} lead={steps.lead} items={steps.items} />}
+
+  {
+    related.length > 0 && (
+      <section class="section" aria-labelledby="related">
+        <h2 id="related">{t(lang, "service.projects")}</h2>
+        <ul class="card-grid">
+          {related.map((item) => (
+            <ProjectCard project={item} lang={lang} />
           ))}
         </ul>
-      )
-    }
-  </article>
-  <ContactCta lang={lang} />
+      </section>
+    )
+  }
+
+  <ContactBand lang={lang} />
 </BaseLayout>

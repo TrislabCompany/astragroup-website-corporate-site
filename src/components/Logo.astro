@@ -1,15 +1,17 @@
 ---
-// The site's logo mark: a neutral sample, replace it with the brand's. One of
-// the two brand files with public/favicon.svg. Decorative: the name next to it
-// carries the meaning, so it is hidden from assistive technology.
+// The Astra Group logo, white, for the navy header and footer: public/logo.svg,
+// traced from the earlier site's logo. One file, cached once for every page.
+// Its alternative text is the company's name, which the logo spells out.
+import site from "../site.config";
+
 interface Props {
-  size?: number;
+  /** The height in CSS pixels; the width follows the logo's proportions. */
+  height?: number;
 }
 
-const { size = 36 } = Astro.props;
+const { height = 64 } = Astro.props;
+// public/logo.svg has the viewBox 1277 × 1482.
+const width = Math.round((height * 1277) / 1482);
 ---
 
-<svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-  <rect width="32" height="32" rx="6" fill="#2457c5"></rect>
-  <path d="M8 10h16v3h-6.5v11h-3V13H8z" fill="#ffffff"></path>
-</svg>
+<img class="logo" src="/logo.svg" alt={site.name} width={width} height={height} />

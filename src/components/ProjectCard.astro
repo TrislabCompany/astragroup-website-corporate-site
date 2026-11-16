@@ -1,0 +1,31 @@
+---
+// A project as a card: its cover photo, and under it on solid navy the title
+// and the type of work, with the place once the company has confirmed it.
+import { Image } from "astro:assets";
+import { localizedPath, type Lang } from "../i18n";
+import type { Project } from "../lib/catalog";
+import { entrySlug } from "../lib/content";
+import { card } from "../lib/images";
+
+interface Props {
+  project: Project;
+  lang: Lang;
+  // The card's heading level: one below the heading of the list it is in.
+  level?: 2 | 3;
+}
+
+const { project, lang, level = 3 } = Astro.props;
+const Heading = `h${level}` as const;
+const href = localizedPath(lang, `/projects/${entrySlug(project)}`);
+const { cover, type, place } = project.data;
+---
+
+<li class="project-card">
+  <article>
+    <Image src={cover.src} alt="" {...card} class="card-photo" />
+    <div class="project-card-text">
+      <p class="project-card-type">{place ? `${type} · ${place}` : type}</p>
+      <Heading><a href={href}>{project.data.title}</a></Heading>
+    </div>
+  </article>
+</li>

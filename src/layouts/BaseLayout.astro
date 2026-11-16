@@ -9,8 +9,12 @@ import { languages, t, unlocalizedPath, type Lang } from "../i18n";
 import site from "../site.config";
 import "../styles/tokens.css";
 import "../styles/global.css";
-// The Latin subset of the font in src/styles/tokens.css, loaded early so text is drawn once, in it.
-import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+// The subsets of the font in src/styles/tokens.css, loaded early so text is drawn once, in them.
+// Latin Extended (č, š, ž, ć, đ) is preloaded only for the languages whose
+// every page uses it: arriving late, it moved the home page hero (Cumulative
+// Layout Shift). Italian and English pages mostly don't need it.
+import robotoLatin from "@fontsource-variable/roboto/files/roboto-latin-wght-normal.woff2?url";
+import robotoLatinExt from "@fontsource-variable/roboto/files/roboto-latin-ext-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -25,6 +29,7 @@ interface Props {
 }
 
 const { title, description, lang, available = languages, noindex, image } = Astro.props;
+const needsLatinExt = lang === "sl" || lang === "hr";
 
 // The page without its language prefix, for the language switch.
 const path = unlocalizedPath(Astro.url.pathname);
@@ -35,7 +40,8 @@ const path = unlocalizedPath(Astro.url.pathname);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={robotoLatin} as="font" type="font/woff2" crossorigin />
+    {needsLatinExt && <link rel="preload" href={robotoLatinExt} as="font" type="font/woff2" crossorigin />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <SeoHead title={title} description={description} lang={lang} available={available} noindex={noindex} image={image} />
     <meta name="theme-color" content={site.themeColor} />

@@ -19,6 +19,7 @@ const sections = await Promise.all(
 const legal = [
   { on: site.legalPages.imprint, href: "/imprint", label: t(lang, "legal.imprint") },
   { on: site.legalPages.privacy, href: "/privacy", label: t(lang, "legal.privacy") },
+  { on: site.legalPages.terms ?? false, href: "/terms", label: t(lang, "legal.terms") },
   { on: site.legalPages.accessibility, href: "/accessibility", label: t(lang, "legal.accessibility") },
   { on: site.legalPages.sustainability, href: "/sustainability", label: t(lang, "legal.sustainability") },
 ].filter((link) => link.on);
