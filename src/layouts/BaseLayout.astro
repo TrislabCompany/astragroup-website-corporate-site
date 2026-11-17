@@ -40,6 +40,8 @@ const path = unlocalizedPath(Astro.url.pathname);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- A page's own early requests, such as its head photo (HeadPhotoPreload.astro). -->
+    <slot name="head" />
     <link rel="preload" href={robotoLatin} as="font" type="font/woff2" crossorigin />
     {needsLatinExt && <link rel="preload" href={robotoLatinExt} as="font" type="font/woff2" crossorigin />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

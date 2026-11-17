@@ -1,5 +1,6 @@
 ---
 title: "Rifacimento di un tetto"
+address: "rifacimento-tetto"
 summary: "Una copertura moderna con isolamento migliorato."
 order: 3
 type: "Tetto"

@@ -1,5 +1,5 @@
 ---
-// A service group as a card: its photo, title, one line and a link to its page.
+// A service group as a card: its photo, title, one line (and on the services page what it includes) and a link to its page.
 import { Image } from "astro:assets";
 import { localizedPath, type Lang } from "../i18n";
 import type { Service } from "../lib/catalog";
@@ -11,9 +11,11 @@ interface Props {
   lang: Lang;
   // The card's heading level: one below the heading of the list it is in.
   level?: 2 | 3;
+  /** Show what the group includes under its line (the services page). */
+  details?: boolean;
 }
 
-const { service, lang, level = 3 } = Astro.props;
+const { service, lang, level = 3, details = false } = Astro.props;
 const Heading = `h${level}` as const;
 const href = localizedPath(lang, `/services/${entrySlug(service)}`);
 const { photo } = service.data;
@@ -31,6 +33,15 @@ const { photo } = service.data;
     <div class="card-body">
       <Heading><a href={href}>{service.data.title}</a></Heading>
       <p>{service.data.summary}</p>
+      {
+        details && (
+          <ul class="card-features">
+            {service.data.features.map((feature) => (
+              <li>{feature}</li>
+            ))}
+          </ul>
+        )
+      }
     </div>
   </article>
 </li>

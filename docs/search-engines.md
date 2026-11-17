@@ -20,7 +20,7 @@ What the site tells search engines and social networks, what the checks hold it 
 ## 2. robots.txt and the sitemap
 
 - `/robots.txt` (`src/pages/robots.txt.ts`) lets search engines and AI answer engines in, keeps AI training crawlers out, and names the sitemap: `Sitemap: https://<domain>/sitemap-index.xml`.
-- `/sitemap-index.xml` and `/sitemap-0.xml` follow the [sitemaps.org protocol](https://www.sitemaps.org/protocol.html), the format Google, Bing and the others read. Each address lists its other languages and `x-default` as `<xhtml:link rel="alternate" hreflang>`, the way [Google reads language versions in a sitemap](https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap). `astro.config.mjs` builds it with `@astrojs/sitemap` and `src/components/seo/sitemap.mjs`.
+- `/sitemap-index.xml` and `/sitemap-0.xml` follow the [sitemaps.org protocol](https://www.sitemaps.org/protocol.html), the format Google, Bing and the others read. Each address lists its other languages and `x-default` as `<xhtml:link rel="alternate" hreflang>`, the way [Google reads language versions in a sitemap](https://developers.google.com/search/docs/specialty/international/localized-versions#sitemap). `astro.config.mjs` builds it with `@astrojs/sitemap` and `src/components/seo/sitemap.mjs`. The addresses differ per language (`/sl/storitve`, `/it/servizi`), so the alternates are read from each built page's own hreflang links (`alternatesOfPage`), not paired by path.
 - The addresses use `url` from `src/site.config.ts`, the production domain, in every Environment. dev and staging are behind Cloudflare Access, so no search engine reads them.
 
 `pnpm test` runs `scripts/check-sitemap.mjs` on the build. It fails when:

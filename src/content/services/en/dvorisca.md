@@ -1,5 +1,6 @@
 ---
 title: "Courtyards and paving"
+address: "courtyards"
 summary: "Outdoor areas laid out and renovated."
 order: 5
 photo:

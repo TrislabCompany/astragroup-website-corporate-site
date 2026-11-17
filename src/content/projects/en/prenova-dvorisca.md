@@ -1,5 +1,6 @@
 ---
 title: "Courtyard renovation"
+address: "courtyard-renovation"
 summary: "A courtyard renovated with several paving techniques."
 order: 1
 type: "Paving and tiling"

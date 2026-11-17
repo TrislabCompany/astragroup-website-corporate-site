@@ -1,5 +1,6 @@
 ---
 title: "Uređenje dvorišta"
+address: "dvorista"
 summary: "Cjelovito uređenje i obnova vanjskih površina."
 order: 5
 photo:

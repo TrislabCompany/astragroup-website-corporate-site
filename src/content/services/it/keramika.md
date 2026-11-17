@@ -1,5 +1,6 @@
 ---
 title: "Posa di piastrelle"
+address: "piastrelle"
 summary: "Posa di piastrelle di ogni tipo, all'interno e all'esterno."
 order: 4
 photo:

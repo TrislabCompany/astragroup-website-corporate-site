@@ -1,5 +1,6 @@
 ---
 title: "Roof renovation"
+address: "roof-renovation"
 summary: "A modern roofing system with improved insulation."
 order: 3
 type: "Roof"

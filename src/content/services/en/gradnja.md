@@ -1,5 +1,6 @@
 ---
 title: "Residential and commercial construction"
+address: "construction"
 summary: "Complete construction for residential and commercial buildings."
 order: 1
 photo:

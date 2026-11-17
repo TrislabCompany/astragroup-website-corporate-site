@@ -1,5 +1,6 @@
 ---
 title: "Rinnovo di un cortile"
+address: "rinnovo-cortile"
 summary: "Rinnovo di un cortile con diverse tecniche di pavimentazione."
 order: 1
 type: "Pavimentazione e piastrelle"

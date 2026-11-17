@@ -1,5 +1,6 @@
 ---
 title: "Obnova dvorišta"
+address: "obnova-dvorista"
 summary: "Obnova dvorišta različitim tehnikama popločavanja."
 order: 1
 type: "Popločavanje i keramika"

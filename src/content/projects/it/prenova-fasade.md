@@ -1,5 +1,6 @@
 ---
 title: "Rinnovo di una facciata"
+address: "rinnovo-facciata"
 summary: "Rinnovo della facciata di un edificio con tecniche tradizionali."
 order: 2
 type: "Facciata"

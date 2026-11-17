@@ -4,13 +4,13 @@
 // gives visitors a second way to find a page besides the menu (WCAG 2.4.5).
 // The lists of items come from `collections` in src/site.config.ts. A page you
 // add by hand needs a link here.
-import { languagePaths, localizedPath, t, type Lang } from "../../i18n";
+import { localizedPath, pagePaths, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import { entrySlug } from "../../lib/content";
 import { sortedItems, type ItemCollection } from "../../lib/items";
 import site from "../../site.config";
 
-export const getStaticPaths = languagePaths;
+export const getStaticPaths = () => pagePaths("sitemap");
 
 const { lang } = Astro.props as { lang: Lang };
 const sections = await Promise.all(

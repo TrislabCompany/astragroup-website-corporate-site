@@ -34,10 +34,10 @@ const site: SiteSettings<Lang> = {
         en: "Services"
       },
       lead: {
-        sl: "Šest področij del, od novogradnje do prenove.",
-        it: "Sei ambiti di lavoro, dalla nuova costruzione alla ristrutturazione.",
-        hr: "Šest područja rada, od novogradnje do obnove.",
-        en: "Six kinds of work, from new builds to renovations."
+        sl: "Gradimo, prenavljamo in urejamo okolico hiš, od temeljev do ključa. Šest področij del in en sogovornik od ogleda do predaje.",
+        it: "Costruiamo, ristrutturiamo e sistemiamo gli esterni delle case, dalle fondamenta alla consegna chiavi in mano. Sei ambiti di lavoro e un solo referente dal sopralluogo alla consegna.",
+        hr: "Gradimo, obnavljamo i uređujemo okoliš kuća, od temelja do ključa. Šest područja rada i jedan sugovornik od izvida do predaje.",
+        en: "We build and renovate houses and lay out their grounds, from the foundations to turnkey. Six kinds of work and one contact from the site visit to the handover."
       },
       nav: true,
       home: true

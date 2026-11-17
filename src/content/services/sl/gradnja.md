@@ -1,5 +1,6 @@
 ---
 title: "Stanovanjska in poslovna gradnja"
+address: "gradnja"
 summary: "Celostne gradbene rešitve za stanovanjske in poslovne objekte."
 order: 1
 photo:

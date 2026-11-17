@@ -1,14 +1,20 @@
 ---
 // The page of one service or one project.
 //
-// A service: a photo head, what the group includes, the text, how a job runs,
-// its projects, and on the facade and roofing pages the extension site.
+// A service: a photo head (with a link to the extension site on the facade
+// and roofing pages), what the group includes, the text, then the blocks a
+// longer service page has (the kinds, what the price depends on, the
+// extension site, how the work runs, common questions), its projects.
 // A project: its cover as the head, the type of work (and the place and year
 // once confirmed), its services, the text and its gallery: only its own photos.
 import { Image } from "astro:assets";
 import { getEntry, render, type CollectionEntry } from "astro:content";
 import ContactBand from "../../../components/ContactBand.astro";
 import ExtensionSiteLink from "../../../components/ExtensionSiteLink.astro";
+import FaqList from "../../../components/FaqList.astro";
+import HeadPhotoPreload from "../../../components/HeadPhotoPreload.astro";
+import KindGrid from "../../../components/KindGrid.astro";
+import PriceFactors from "../../../components/PriceFactors.astro";
 import ProjectCard from "../../../components/ProjectCard.astro";
 import ProjectGallery from "../../../components/ProjectGallery.astro";
 import StepList from "../../../components/StepList.astro";
@@ -36,10 +42,13 @@ const project = collection === "projects" ? (entry as Project) : undefined;
 const head = service?.data.photo ?? project?.data.cover;
 const related = service ? await projectsOf(service, lang) : [];
 const projectServices = project ? await servicesOf(project, lang) : [];
-const steps = service ? (await getEntry("pages", `${lang}/home`))?.data.steps : undefined;
+// A service's own steps, or else how any job runs (the home page's steps).
+const steps = service ? (service.data.process ?? (await getEntry("pages", `${lang}/home`))?.data.steps) : undefined;
+const extension = service?.data.extensionSite;
 ---
 
 <BaseLayout {...seoProps(entry.data)} description={entry.data.summary} lang={lang} available={available}>
+  {head && <HeadPhotoPreload slot="head" src={head.src} />}
   <section class="photo-head bleed" aria-labelledby="item-title">
     {head && <Image src={head.src} alt={head.alt} {...headPhoto} loading="eager" fetchpriority="high" class="hero-photo" />}
     <div class="wrap hero-text">
@@ -47,6 +56,18 @@ const steps = service ? (await getEntry("pages", `${lang}/home`))?.data.steps : 
         <p class="eyebrow"><a href={localizedPath(lang, `/${collection}`)}>{settings.title[lang]}</a></p>
         <h1 id="item-title">{entry.data.title}</h1>
         <p class="hero-lead">{entry.data.summary}</p>
+        {
+          service && (
+            <p class="actions">
+              <a class="button" href={localizedPath(lang, "/contact")}>{t(lang, "service.ask")}</a>
+              {extension && (
+                <a class="button ghost" href={extension.url} hreflang="sl">
+                  {t(lang, "service.moreOn")} {extension.name} →
+                </a>
+              )}
+            </p>
+          )
+        }
       </div>
     </div>
   </section>
@@ -107,9 +128,15 @@ const steps = service ? (await getEntry("pages", `${lang}/home`))?.data.steps : 
 
   {project && <ProjectGallery photos={project.data.gallery} lang={lang} />}
 
-  {service?.data.extensionSite && <ExtensionSiteLink site={service.data.extensionSite} lang={lang} />}
+  {service?.data.kinds && <KindGrid {...service.data.kinds} />}
+
+  {service?.data.priceFactors && <PriceFactors {...service.data.priceFactors} lang={lang} />}
+
+  {extension && <ExtensionSiteLink site={extension} lang={lang} />}
 
   {steps && <StepList title={steps.title} lead={steps.lead} items={steps.items} />}
+
+  {service?.data.faq && <FaqList {...service.data.faq} />}
 
   {
     related.length > 0 && (

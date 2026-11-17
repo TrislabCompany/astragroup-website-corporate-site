@@ -20,12 +20,23 @@ const photo = (image: SchemaContext["image"]) =>
     alt: z.string(),
   });
 
+/**
+ * The item's address in its language (/it/servizi/<address>), by default its
+ * file name: src/i18n/routes.ts. Not `slug`: the glob loader would take that
+ * as the entry's id, and the id pairs the translations.
+ */
+const address = z
+  .string()
+  .regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "an address is lower-case letters and digits joined by hyphens, without č, š or ž")
+  .optional();
+
 // The six service groups of the company (docs/brief.md, "Pages or modules").
 const services = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/services" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      address,
       summary: z.string(),
       /** Position in lists, lowest first. */
       order: z.number().int(),
@@ -34,6 +45,43 @@ const services = defineCollection({
       photo: photo(image).optional(),
       /** What the group includes: the items listed on the page and the card. */
       features: z.array(z.string()).min(1).default([]),
+      // The longer service pages (facades, roofing) answer the reader's plain
+      // questions in this order: what kinds there are, what the price
+      // depends on, how the work runs, and the common questions. Each block
+      // is optional; a page without one leaves it out. General facts of the
+      // trade only: never a price, a warranty or a promise the company has
+      // not confirmed (docs/brief.md, "Design rules").
+      /** The kinds of the work (kinds of facades, kinds of roof covering), as cards. */
+      kinds: z
+        .object({
+          title: z.string(),
+          lead: z.string().optional(),
+          items: z.array(z.object({ title: z.string(), text: z.string() })).min(2),
+        })
+        .optional(),
+      /** What the price depends on, as a list. */
+      priceFactors: z
+        .object({
+          title: z.string(),
+          lead: z.string().optional(),
+          items: z.array(z.string()).min(2),
+        })
+        .optional(),
+      /** The steps of this work, in place of the general steps of the home page. */
+      process: z
+        .object({
+          title: z.string(),
+          lead: z.string().optional(),
+          items: z.array(z.object({ title: z.string(), text: z.string() })).min(2),
+        })
+        .optional(),
+      /** Common questions and their answers, each opening without JavaScript. */
+      faq: z
+        .object({
+          title: z.string(),
+          items: z.array(z.object({ question: z.string(), answer: z.string() })).min(1),
+        })
+        .optional(),
       /** The extension site that covers this service in depth (fasadanakljuc.si, strehanakljuc.si). */
       extensionSite: z
         .object({
@@ -53,6 +101,7 @@ const projects = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      address,
       summary: z.string(),
       /** Position in lists, lowest first. */
       order: z.number().int(),
@@ -98,7 +147,18 @@ const pages = defineCollection({
         items: z.array(z.object({ title: z.string(), text: z.string() })).min(2),
       })
       .optional(),
-    region: z.object({ title: z.string(), text: z.string(), places: z.array(z.string()).default([]) }).optional(),
+    region: z
+      .object({
+        title: z.string(),
+        text: z.string(),
+        /** Places as one row of labels, when the company works in one area. */
+        places: z.array(z.string()).default([]),
+        /** The areas the company works in, by country: in place of `places`. */
+        areas: z
+          .array(z.object({ country: z.string(), region: z.string(), places: z.array(z.string()).default([]) }))
+          .default([]),
+      })
+      .optional(),
     /** The about page's vision, mission, values and goals. */
     principles: z.array(z.object({ title: z.string(), text: z.string() })).default([]),
   }),

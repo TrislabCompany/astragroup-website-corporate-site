@@ -2,17 +2,20 @@
 // language from here, never from a hard-coded "en".
 //
 // URLs: with two or more languages every page lives under its language
-// (/en, /sl/about), and "/" leads to the default language. With one
-// language there is no prefix (/, /about). No address ends in a slash except
-// "/" (astro.config.mjs).
+// (/en, /sl/o-nas), and "/" leads to the default language. With one
+// language there is no prefix (/, /o-nas). No address ends in a slash except
+// "/" (astro.config.mjs). Each address is in its page's language: the code
+// uses internal paths ("/about", "/services/fasade") and ./routes.ts
+// translates them.
 
 import site, { languages, type Lang } from "../site.config";
+import { itemNameOf, itemSlug, pageNameOf, pages, type PageName } from "./routes";
 import en, { type UiKey, type UiStrings } from "./ui/en";
 import hr from "./ui/hr";
 import it from "./ui/it";
 import sl from "./ui/sl";
 
-export { languages, type Lang };
+export { languages, pages, type Lang, type PageName };
 export const defaultLanguage: Lang = site.defaultLanguage;
 
 /** Add a file to ui/ and a line here for each new language. A language not in
@@ -30,23 +33,36 @@ export function isLang(value: string | undefined): value is Lang {
   return (languages as readonly string[]).includes(value ?? "");
 }
 
-/** "/" or "/about" in the given language: "/sl" or "/sl/about". */
+/**
+ * An internal path's address in the given language: "/" gives "/sl",
+ * "/about" gives "/sl/o-nas", "/services/fasade" gives "/it/servizi/facciate".
+ */
 export function localizedPath(lang: Lang, path = "/"): string {
-  const clean = path.startsWith("/") ? path : `/${path}`;
+  const [page, item, ...rest] = path.split("/").filter(Boolean);
+  const segments: string[] = [];
+  if (page) segments.push(page in pages ? pages[page as PageName][lang] : page);
+  if (item) segments.push(itemSlug(page, lang, item));
+  segments.push(...rest);
+  const clean = `/${segments.join("/")}`;
   if (!prefixed) return clean;
   return clean === "/" ? `/${lang}` : `/${lang}${clean}`;
 }
 
 /**
- * The same page without its language prefix: "/sl/about" gives "/about".
- * At build time a page's path ends in ".html" ("/sl/about.html", "/sl.html":
- * build.format "file"), which is dropped.
+ * The internal path of an address, without its language: "/sl/o-nas" gives
+ * "/about", "/it/servizi/facciate" gives "/services/fasade". At build time a
+ * page's path ends in ".html" ("/sl/o-nas.html", "/sl.html": build.format
+ * "file"), which is dropped.
  */
 export function unlocalizedPath(pathname: string): string {
   const [, first, ...rest] = pathname.replace(/\.html$/, "").split("/");
-  const clean = `/${[first, ...rest].join("/")}`;
-  const path = prefixed && isLang(first) ? `/${rest.join("/")}` : clean;
-  return path.replace(/\/+$/, "") || "/";
+  const lang = prefixed && isLang(first) ? first : defaultLanguage;
+  const [segment, item, ...more] = (prefixed && isLang(first) ? rest : [first, ...rest]).filter(Boolean);
+  if (!segment) return "/";
+  const page = pageNameOf(segment, lang) ?? segment;
+  const parts = [page];
+  if (item) parts.push(itemNameOf(page, lang, item));
+  return `/${[...parts, ...more].join("/")}`;
 }
 
 /**
@@ -55,6 +71,15 @@ export function unlocalizedPath(pathname: string): string {
  */
 export function languagePaths() {
   return languages.map((lang) => ({ params: { lang: prefixed ? lang : undefined }, props: { lang } }));
+}
+
+/**
+ * getStaticPaths for a page whose address is in its language
+ * (src/pages/[...lang]/[about].astro): the parameter is named after the page,
+ * and its value is the page's address in each language (./routes.ts).
+ */
+export function pagePaths(page: PageName) {
+  return languagePaths().map((path) => ({ ...path, params: { ...path.params, [page]: pages[page][path.props.lang] } }));
 }
 
 /** The territory each supported language code is written in, for Open Graph (en_GB) and number and date formats. */
