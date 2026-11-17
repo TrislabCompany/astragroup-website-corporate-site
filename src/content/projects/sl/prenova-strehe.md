@@ -1,5 +1,6 @@
 ---
 title: "Prenova strehe"
+address: "prenova-strehe"
 summary: "Sodobna strešna konstrukcija z izboljšano izolacijo."
 order: 3
 type: "Streha"

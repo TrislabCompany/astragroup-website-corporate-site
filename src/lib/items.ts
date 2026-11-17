@@ -1,7 +1,8 @@
 // Lists of items (the `collections` of src/site.config.ts): sorted lists per
 // language, and the static paths of the list pages and the item pages.
 import { getCollection, type CollectionEntry, type CollectionKey } from "astro:content";
-import { languages, prefixed, type Lang } from "../i18n";
+import { languages, pages, prefixed, type Lang, type PageName } from "../i18n";
+import { itemSlug } from "../i18n/routes";
 import site from "../site.config";
 import { entryLang, entryLanguages, entrySlug, getEntries } from "./content";
 
@@ -20,10 +21,16 @@ export async function sortedItems<C extends ItemCollection>(collection: C, lang:
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
 
+/** A list's address segment in a language (src/i18n/routes.ts): "services" in Slovenian is "storitve". */
+function collectionSlug(id: string, lang: Lang): string {
+  if (!(id in pages)) throw new Error(`The list "${id}" has no address per language in pages in src/i18n/routes.ts.`);
+  return pages[id as PageName][lang];
+}
+
 /** getStaticPaths for /<lang>/<collection>: one list page per collection and language. */
 export function collectionPaths() {
   return site.collections.flatMap(({ id }) =>
-    languages.map((lang) => ({ params: { lang: prefixed ? lang : undefined, collection: id }, props: { lang, collection: id as ItemCollection } })),
+    languages.map((lang) => ({ params: { lang: prefixed ? lang : undefined, collection: collectionSlug(id, lang) }, props: { lang, collection: id as ItemCollection } })),
   );
 }
 
@@ -38,7 +45,7 @@ export async function itemPaths() {
           const lang = entryLang(entry);
           const name = entrySlug(entry);
           return {
-            params: { lang: prefixed ? lang : undefined, collection: id, id: name },
+            params: { lang: prefixed ? lang : undefined, collection: collectionSlug(id, lang), id: itemSlug(id, lang, name) },
             props: { entry, lang, collection, available: await entryLanguages(collection, name) },
           };
         }),

@@ -1,5 +1,6 @@
 ---
 title: "Obnova fasade"
+address: "obnova-fasade"
 summary: "Obnova fasade zgrade tradicionalnim tehnikama."
 order: 2
 type: "Fasada"

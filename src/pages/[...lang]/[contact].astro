@@ -1,9 +1,9 @@
 ---
 import ContactDetails from "../../components/ContactDetails.astro";
-import { languagePaths, t, type Lang } from "../../i18n";
+import { pagePaths, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-export const getStaticPaths = languagePaths;
+export const getStaticPaths = () => pagePaths("contact");
 
 const { lang } = Astro.props as { lang: Lang };
 ---

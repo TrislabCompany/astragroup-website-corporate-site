@@ -2,7 +2,7 @@
 import { readFile, writeFile } from "node:fs/promises";
 import sitemap from "@astrojs/sitemap";
 import { defineConfig } from "astro/config";
-import { sitemapWithoutNoindex, withDefaultLanguage } from "./src/components/seo/sitemap.mjs";
+import { alternatesOfPage, sitemapWithoutNoindex } from "./src/components/seo/sitemap.mjs";
 import site, { languages } from "./src/site.config";
 
 // With two or more languages every page lives under its language (/en,
@@ -14,6 +14,7 @@ import site, { languages } from "./src/site.config";
 // them there and redirects /en/about/ to /en/about.
 const prefixed = languages.length > 1;
 const root = `${site.url}/`;
+const dist = new URL("./dist/", import.meta.url);
 
 /** @param {string} url */
 function canonical(url) {
@@ -53,21 +54,14 @@ export default defineConfig({
     // head. Pages marked noindex are taken out after it (docs/search-engines.md).
     sitemap({
       filter: (page) => !(prefixed && page === root),
-      // Same addresses as the canonical links: no trailing slash.
-      serialize: (item) => ({
-        ...item,
-        url: canonical(item.url),
-        links: withDefaultLanguage(
-          item.links?.map((link) => ({ ...link, url: canonical(link.url) })),
-          site.defaultLanguage,
-        ),
-      }),
-      i18n: prefixed
-        ? {
-            defaultLocale: site.defaultLanguage,
-            locales: Object.fromEntries(languages.map((lang) => [lang, lang])),
-          }
-        : undefined,
+      // Same addresses as the canonical links: no trailing slash. Each page's
+      // address is in its own language (/sl/o-nas, /en/about), so the
+      // alternates come from the page's own hreflang links, x-default
+      // included, not from matching paths.
+      serialize: async (item) => {
+        const url = canonical(item.url);
+        return { ...item, url, links: prefixed ? await alternatesOfPage(dist, url) : undefined };
+      },
     }),
     sitemapWithoutNoindex(site.url),
   ],

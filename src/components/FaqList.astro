@@ -1,0 +1,25 @@
+---
+// Common questions, each answer opening under its question with <details>: no JavaScript.
+interface Props {
+  title: string;
+  items: { question: string; answer: string }[];
+  /** The id of the heading, for the section's aria-labelledby. */
+  id?: string;
+}
+
+const { title, items, id = "faq" } = Astro.props;
+---
+
+<section class="section faq" aria-labelledby={id}>
+  <h2 id={id}>{title}</h2>
+  <div class="faq-list">
+    {
+      items.map((item) => (
+        <details>
+          <summary>{item.question}</summary>
+          <p>{item.answer}</p>
+        </details>
+      ))
+    }
+  </div>
+</section>

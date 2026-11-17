@@ -1,5 +1,6 @@
 ---
 title: "Postavljanje keramike"
+address: "keramika"
 summary: "Postavljanje svih vrsta keramike u kući i izvan nje."
 order: 4
 photo:

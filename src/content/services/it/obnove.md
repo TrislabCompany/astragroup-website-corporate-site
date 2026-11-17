@@ -1,5 +1,6 @@
 ---
 title: "Ristrutturazioni e adattamenti"
+address: "ristrutturazioni"
 summary: "Ristrutturazione e adattamento completo degli edifici."
 order: 6
 photo:

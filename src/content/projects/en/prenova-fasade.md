@@ -1,5 +1,6 @@
 ---
 title: "Facade renovation"
+address: "facade-renovation"
 summary: "A building's facade renovated with traditional techniques."
 order: 2
 type: "Facade"

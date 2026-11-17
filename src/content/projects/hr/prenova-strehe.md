@@ -1,5 +1,6 @@
 ---
 title: "Obnova krova"
+address: "obnova-krova"
 summary: "Moderan krovni sustav s poboljšanom izolacijom."
 order: 3
 type: "Krov"

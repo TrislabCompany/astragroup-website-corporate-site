@@ -1,5 +1,6 @@
 ---
 title: "Prenova dvorišča"
+address: "prenova-dvorisca"
 summary: "Prenova dvorišča z različnimi tehnikami polaganja tlakov."
 order: 1
 type: "Tlakovanje in keramika"

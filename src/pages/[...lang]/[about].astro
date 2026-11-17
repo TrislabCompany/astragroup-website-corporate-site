@@ -3,10 +3,10 @@
 // then the vision, mission, values and goals as a short list.
 import { getEntry, render } from "astro:content";
 import ContactBand from "../../components/ContactBand.astro";
-import { languagePaths, t, type Lang } from "../../i18n";
+import { pagePaths, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 
-export const getStaticPaths = languagePaths;
+export const getStaticPaths = () => pagePaths("about");
 
 const { lang } = Astro.props as { lang: Lang };
 const page = await getEntry("pages", `${lang}/about`);

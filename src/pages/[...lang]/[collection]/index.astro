@@ -1,9 +1,13 @@
 ---
-// The list pages: /<lang>/services and /<lang>/projects.
+// The list pages: /<lang>/services and /<lang>/projects (in each language's
+// words: /sl/storitve). The services page also shows what each group
+// includes, the extension sites and how a job runs.
+import { getEntry } from "astro:content";
 import ContactBand from "../../../components/ContactBand.astro";
 import ProjectCard from "../../../components/ProjectCard.astro";
 import ServiceCard from "../../../components/ServiceCard.astro";
-import { type Lang } from "../../../i18n";
+import StepList from "../../../components/StepList.astro";
+import { t, type Lang } from "../../../i18n";
 import BaseLayout from "../../../layouts/BaseLayout.astro";
 import { projects, services } from "../../../lib/catalog";
 import { collectionPaths, collectionSettings, type ItemCollection } from "../../../lib/items";
@@ -14,6 +18,8 @@ const { lang, collection } = Astro.props as { lang: Lang; collection: ItemCollec
 const settings = collectionSettings(collection);
 const serviceList = collection === "services" ? await services(lang) : [];
 const projectList = collection === "projects" ? await projects(lang) : [];
+const extensions = serviceList.flatMap((service) => (service.data.extensionSite ? [service.data.extensionSite] : []));
+const steps = collection === "services" ? (await getEntry("pages", `${lang}/home`))?.data.steps : undefined;
 ---
 
 <BaseLayout title={settings.title[lang]} description={settings.lead[lang]} lang={lang}>
@@ -22,8 +28,26 @@ const projectList = collection === "projects" ? await projects(lang) : [];
     <p class="lead">{settings.lead[lang]}</p>
   </div>
   <ul class="card-grid">
-    {serviceList.map((service) => <ServiceCard service={service} lang={lang} level={2} />)}
+    {serviceList.map((service) => <ServiceCard service={service} lang={lang} level={2} details />)}
     {projectList.map((project) => <ProjectCard project={project} lang={lang} level={2} />)}
   </ul>
+  {
+    extensions.length > 0 && (
+      <aside class="extension-link" aria-labelledby="extension-sites">
+        <h2 id="extension-sites">{t(lang, "services.extensionTitle")}</h2>
+        <p>{t(lang, "services.extensionText")}</p>
+        <ul>
+          {extensions.map((site) => (
+            <li>
+              <a class="button" href={site.url} hreflang="sl">
+                {site.name} →
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )
+  }
+  {steps && <StepList title={steps.title} lead={steps.lead} items={steps.items} />}
   <ContactBand lang={lang} />
 </BaseLayout>

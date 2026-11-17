@@ -5,6 +5,7 @@ import { Image } from "astro:assets";
 import { getEntry } from "astro:content";
 import heroPhoto from "../../assets/projects/facade/1.jpg";
 import ContactBand from "../../components/ContactBand.astro";
+import HeadPhotoPreload from "../../components/HeadPhotoPreload.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import ServiceCard from "../../components/ServiceCard.astro";
 import StepList from "../../components/StepList.astro";
@@ -26,6 +27,7 @@ const projectList = await projects(lang);
 ---
 
 <BaseLayout title={`${site.name}: ${page.data.title}`} description={page.data.description} lang={lang}>
+  <HeadPhotoPreload slot="head" src={heroPhoto} />
   <section class="hero bleed" aria-labelledby="hero-title">
     <Image src={heroPhoto} alt={heroAlt ?? ""} {...head} loading="eager" fetchpriority="high" class="hero-photo" />
     <div class="wrap hero-text">
@@ -68,7 +70,7 @@ const projectList = await projects(lang);
             <h2 id="region">{region.title}</h2>
             <p>{region.text}</p>
           </div>
-          {region.places.length > 0 && (
+          {region.areas.length === 0 && region.places.length > 0 && (
             <ul class="places">
               {region.places.map((place) => (
                 <li>{place}</li>
@@ -76,6 +78,23 @@ const projectList = await projects(lang);
             </ul>
           )}
         </div>
+        {region.areas.length > 0 && (
+          <ul class="wrap areas">
+            {region.areas.map((area) => (
+              <li>
+                <h3>{area.country}</h3>
+                <p>{area.region}</p>
+                {area.places.length > 0 && (
+                  <ul class="places">
+                    {area.places.map((place) => (
+                      <li>{place}</li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     )
   }

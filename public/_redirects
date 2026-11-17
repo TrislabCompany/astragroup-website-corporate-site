@@ -4,9 +4,9 @@
 # file; astro.config.mjs puts the "/ /sl 301" line above them at build.
 # www.astragroup.si and http:// are redirected at the Cloudflare edge
 # (tl-cloud-infrastructure), not here.
-/about /sl/about 301
-/services /sl/services 301
-/projects /sl/projects 301
-/contact /sl/contact 301
-/privacy /sl/privacy 301
-/terms /sl/terms 301
+/about /sl/o-nas 301
+/services /sl/storitve 301
+/projects /sl/projekti 301
+/contact /sl/kontakt 301
+/privacy /sl/zasebnost 301
+/terms /sl/splosni-pogoji 301

@@ -1,5 +1,6 @@
 ---
 title: "Renovations and conversions"
+address: "renovations"
 summary: "Complete renovations and conversions of buildings."
 order: 6
 photo:

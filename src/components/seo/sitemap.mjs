@@ -22,6 +22,23 @@ export function withDefaultLanguage(links, defaultLanguage) {
   return target ? [...links, { lang: "x-default", url: target.url }] : links;
 }
 
+/**
+ * The language alternates of a built page, as its <link rel="alternate"
+ * hreflang> say, x-default included. For a site whose addresses differ per
+ * language (/sl/o-nas, /en/about), @astrojs/sitemap can't pair the languages
+ * by path, so the sitemap takes them from the page itself.
+ * @param {URL} distDir  the build's output folder
+ * @param {string} url   the page's absolute address
+ * @returns {Promise<{ url: string, lang: string }[] | undefined>}
+ */
+export async function alternatesOfPage(distDir, url) {
+  const path = new URL(url).pathname.replace(/\/+$/, "");
+  const file = new URL(path === "" ? "index.html" : `${path.slice(1)}.html`, distDir);
+  const html = await readFile(file, "utf8").catch(() => "");
+  const links = [...html.matchAll(/<link\s+rel="alternate"\s+hreflang="([^"]+)"\s+href="([^"]+)"/gi)].map(([, lang, href]) => ({ lang, url: href }));
+  return links.length > 0 ? links : undefined;
+}
+
 const NOINDEX = /<meta\s+name="robots"\s+content="[^"]*noindex[^"]*"/i;
 
 /**

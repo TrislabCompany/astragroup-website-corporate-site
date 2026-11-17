@@ -3,7 +3,7 @@
 // src/site.config.ts must have its text in every language, or the build fails.
 
 import { getCollection } from "astro:content";
-import { languages, prefixed } from "../i18n";
+import { languages, pages, prefixed } from "../i18n";
 import site from "../site.config";
 import { entryLang, entrySlug } from "./content";
 
@@ -15,6 +15,6 @@ export async function legalPaths(page: "privacy" | "accessibility" | "sustainabi
     if (!entry) {
       throw new Error(`legalPages.${page} is on, but src/content/legal/${lang}/${page}.md is missing.`);
     }
-    return { params: { lang: prefixed ? lang : undefined }, props: { lang, entry } };
+    return { params: { lang: prefixed ? lang : undefined, [page]: pages[page][lang] }, props: { lang, entry } };
   });
 }

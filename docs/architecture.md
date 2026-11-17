@@ -46,14 +46,14 @@ The build holds nothing that differs between Environments. Each deploy writes `/
 | Folder or file | Holds |
 | --- | --- |
 | `src/site.config.ts` | The site's facts, built into the pages: languages, company, contact, legal pages, structured data, `security.txt` ([site-settings.md](site-settings.md)) |
-| `src/pages/[...lang]/` | One file per page, built once per language. The file's path is the URL after the language |
+| `src/pages/[...lang]/` | One file per page, built once per language. Each address is in its page's language (`/sl/o-nas`, `/it/chi-siamo`, `/en/about`): a page file is named by its parameter (`[about].astro`) and builds one address per language from `src/i18n/routes.ts` |
 | `src/pages/` | The 404 page, `robots.txt` and `.well-known/security.txt` |
 | `src/layouts/BaseLayout.astro` | The head, header and footer every page shares |
 | `src/styles/` | `global.css`, the layout and components, and `tokens.css`, the brand's colours and font |
 | `src/components/` | Reusable parts of pages |
 | `src/content/<collection>/<language>/` | Markdown items of the lists in `collections` of `src/site.config.ts`, described in `src/content.config.ts` |
 | `src/content/legal/<language>/` | The privacy policy, the accessibility statement and the sustainability page |
-| `src/i18n/` | The interface strings per language, and the helpers for language URLs |
+| `src/i18n/` | The interface strings per language, and the helpers for language URLs. The code links by internal paths (`/about`, `/services/fasade`); `localizedPath()` turns them into each language's address with `routes.ts` (the pages' words per language, and the `address` in an item's front matter), and `unlocalizedPath()` turns an address back, for the language switch and the hreflang links |
 | `src/lib/config.ts` | The one place that reads `/config.json` |
 | `public/` | Files copied as they are: the favicon (with `src/components/Logo.astro`, the brand's logo) and `_headers` |
 | `scripts/` | The page-weight and `security.txt` checks that `pnpm test` runs on `dist/`, the deploy-time settings (`write-config.mjs`), the release versions (`version.mjs`), `pnpm status`, their unit tests, and the yearly CO₂ estimate (`pnpm co2`) |

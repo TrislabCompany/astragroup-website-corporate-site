@@ -1,5 +1,6 @@
 ---
 title: "Obnove i adaptacije"
+address: "obnove"
 summary: "Cjelovite obnove i adaptacije objekata."
 order: 6
 photo:

@@ -1,5 +1,6 @@
 ---
 title: "Tiling"
+address: "tiling"
 summary: "Tiles of every kind, indoors and outdoors."
 order: 4
 photo:

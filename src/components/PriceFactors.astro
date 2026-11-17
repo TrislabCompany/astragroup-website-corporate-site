@@ -1,0 +1,26 @@
+---
+// What the price of a service depends on, as a list on a light band, with a link to ask for a quote.
+import { localizedPath, t, type Lang } from "../i18n";
+
+interface Props {
+  title: string;
+  lead?: string;
+  items: string[];
+  lang: Lang;
+  /** The id of the heading, for the section's aria-labelledby. */
+  id?: string;
+}
+
+const { title, lead, items, lang, id = "price" } = Astro.props;
+---
+
+<section class="price-factors" aria-labelledby={id}>
+  <div class="price-factors-text">
+    <h2 id={id}>{title}</h2>
+    {lead && <p>{lead}</p>}
+    <a class="button" href={localizedPath(lang, "/contact")}>{t(lang, "service.ask")}</a>
+  </div>
+  <ul class="checklist">
+    {items.map((item) => <li>{item}</li>)}
+  </ul>
+</section>
